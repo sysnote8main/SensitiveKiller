@@ -1,6 +1,5 @@
 package ponzu_ika.sensitive_killer
 
-import com.atilika.kuromoji.ipadic.Token
 import com.atilika.kuromoji.ipadic.Tokenizer
 import com.ibm.icu.text.Transliterator
 import java.io.File
@@ -12,12 +11,11 @@ class SensitiveKiller {
     fun sensitiveKiller(input:String): String {
         println(ngWords)
         println("入力: $input")
-        var res = ""
         var out: String
         val tokenizer = Tokenizer()
         val kanaToLatin = Transliterator.getInstance("Katakana-Latin")
 
-        res = tokenizer.tokenize(input).joinToString {
+        val res = tokenizer.tokenize(input).joinToString {
             if (it.reading == "*") it.surface else it.reading
         }.replace(Regex("""\s|,"""),"")
 /*
