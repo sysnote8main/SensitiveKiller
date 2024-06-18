@@ -6,21 +6,25 @@ import com.ibm.icu.text.Transliterator
 import java.io.File
 
 
-class SensitiveKiller() {
-    fun sensitiveKiller(input:String): String {
-        val ngWords = File("SensitiveWords.csv").readLines()
-            .map { it.split(",") }
+class SensitiveKiller {
+    val ngWords = File("SensitiveWords.csv").readLines().map { it.split(",") }
 
+    fun sensitiveKiller(input:String): String {
+        println(ngWords)
+        println("入力: $input")
         var res = ""
         var out: String
         val tokenizer = Tokenizer()
         val kanaToLatin = Transliterator.getInstance("Katakana-Latin")
 
+        res = tokenizer.tokenize(input).joinToString {
+            if (it.reading == "*") it.surface else it.reading
+        }.replace(Regex("""\s|,"""),"")
+/*
         for (token:Token in tokenizer.tokenize(input)) {
-            res += token.reading.replace(Regex("""\n"""),"")
-        }
-
-        println(res)
+            res += token.surface.replace(Regex("""\n"""),"")
+        }*/
+        println("カナ: $res")
 
         out = res.replace(Regex("""[^ア-ン]"""),"")
         println(out)
@@ -28,8 +32,15 @@ class SensitiveKiller() {
         out = kanaToLatin.transliterate(out).uppercase()
         println(out)
 
-        ngWords.forEach { nglist ->
-            out = out.replace(Regex(nglist[0]),"**${nglist[1]}**")
+        ngWords[1].forEach {word ->
+            out = (out
+                .replace(Regex(word
+                    .replace(Regex("""CHI|TI"""),"(CHI|TI)")
+                    .replace(Regex("""N|NN"""),"(N|NN)")
+                    .replace(Regex("""CO|KO"""),"(CO|KO)")
+                    .replace(Regex("""RA|LLA"""),"(RA|LLA)")
+
+                ),"**$word**"))
         }
 
 
@@ -39,7 +50,10 @@ class SensitiveKiller() {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // o see how IntelliJ IDEA suggests fixing it.
 
-        out = ""
         return out
     }
+}
+
+fun main() {
+    SensitiveKiller().sensitiveKiller("我慢、このカフェラテは(ry ")
 }

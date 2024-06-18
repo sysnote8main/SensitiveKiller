@@ -27,7 +27,6 @@ class Main : ListenerAdapter() {
         retruned = SensitiveKiller().sensitiveKiller(receivedMessage)
         if (retruned.contains("*"))
             event.message.reply(retruned).queue()
-
     }
 
 }
