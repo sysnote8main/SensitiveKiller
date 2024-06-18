@@ -3,21 +3,16 @@ package ponzu_ika
 import com.atilika.kuromoji.ipadic.Token
 import com.atilika.kuromoji.ipadic.Tokenizer
 import com.ibm.icu.text.Transliterator
+import java.io.File
 
 
 class SensitiveKiller() {
     fun sensitiveKiller(input:String): String {
+        val ngWords = File("SensitiveWords.csv").readLines()
+            .map { it.split(",") }
 
-        val ngWords: List<List<String>> = listOf(
-            listOf("MANCO|MANKO", "MANKO"),
-            listOf("FERA|FELLA", "FELLA"),
-            listOf("CHINKO|TINKO","CHINKO"),
-            listOf("ANARU|ANAL","ANAL"),
-            listOf("INRAN|INNRAN","INRAN")
-        )
-
-        var res = "";
-        var out: String;
+        var res = ""
+        var out: String
         val tokenizer = Tokenizer()
         val kanaToLatin = Transliterator.getInstance("Katakana-Latin")
 
@@ -42,8 +37,13 @@ class SensitiveKiller() {
         println(out)
 
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
+        // o see how IntelliJ IDEA suggests fixing it.
 
+        out = ""
         return out
     }
+}
+
+fun main(){
+    SensitiveKiller().sensitiveKiller("コインランドリー")
 }
