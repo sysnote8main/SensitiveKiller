@@ -1,4 +1,4 @@
-package ponzu_ika
+package ponzu_ika.sensitive_killer
 
 import com.atilika.kuromoji.ipadic.Token
 import com.atilika.kuromoji.ipadic.Tokenizer
@@ -42,8 +42,4 @@ class SensitiveKiller() {
         out = ""
         return out
     }
-}
-
-fun main(){
-    SensitiveKiller().sensitiveKiller("コインランドリー")
 }
