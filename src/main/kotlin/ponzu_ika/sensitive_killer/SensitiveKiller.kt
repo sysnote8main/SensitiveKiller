@@ -19,7 +19,7 @@ class SensitiveKiller {
         //読みがカタカナのためそのまま流用。しかし、読みがない場合があるためその際は文字そのものを取得
         //恐らくここの文字取得でひらがな/カタカナ以外が取得されるとエラーを吐く。要するにバグの温床
         //Regexで削除してしまえば解決できるがRegexの多用は重そう
-        val res = tokenizer.tokenize(input).joinToString {
+        val res = tokenizer.tokenize(input.uppercase()).joinToString {
             if (it.reading == "*") it.surface else it.reading
         }.replace(Regex("""\s|,"""),"")
 /*
