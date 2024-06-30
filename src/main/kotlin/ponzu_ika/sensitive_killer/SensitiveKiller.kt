@@ -6,7 +6,7 @@ import java.io.File
 
 
 class SensitiveKiller {
-    val ngWords = File("SensitiveWords.csv").readLines().map { it.split(",") }
+    val ngWords = File("SensitiveWords.txt").readLines().map { it.split(",") }
 
     fun sensitiveKiller(input:String): String {
         println(ngWords)
@@ -25,25 +25,27 @@ class SensitiveKiller {
         println("カナ: $res")
 
         out = res.replace(Regex("""[^ア-ン]"""),"")
-        println(out)
+        println("編集済みカナ: $out")
 
         out = kanaToLatin.transliterate(out).uppercase()
-        println(out)
+        println("英大文字: $out")
 
-        ngWords[1].forEach {word ->
-            out = (out
-                .replace(Regex(word
-                    .replace(Regex("""CHI|TI"""),"(CHI|TI)")
-                    .replace(Regex("""N|NN"""),"(N|NN)")
-                    .replace(Regex("""CO|KO"""),"(CO|KO)")
-                    .replace(Regex("""RA|LLA"""),"(RA|LLA)")
-
-                ),"**$word**"))
+        ngWords.forEach { words ->
+            words.forEach { word ->
+                println(out)
+                println(word)
+                out = (out.replace(
+                    Regex(word
+                        .replace(Regex("""CHI|TI"""), "(CHI|TI)")
+                        .replace(Regex("""N|NN"""), "(N|NN)")
+                        .replace(Regex("""CO|KO"""), "(CO|KO)")
+                        .replace(Regex("""RA|LLA"""), "(RA|LLA)")
+                    ), "**$word**"
+                ))
+            }
         }
 
-
-
-        println(out)
+        println("あれば太字: $out")
 
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // o see how IntelliJ IDEA suggests fixing it.
