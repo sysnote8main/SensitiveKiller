@@ -13,7 +13,8 @@ class SensitiveKiller {
         println("入力: $input")
         var out: String
         val tokenizer = Tokenizer()
-        val kanaToLatin = Transliterator.getInstance("Katakana-Latin")
+        val katakanaToLatin = Transliterator.getInstance("Katakana-Latin")
+        val kanaToKatakana = Transliterator.getInstance("Hiragana-Katakana")
 
         val res = tokenizer.tokenize(input).joinToString {
             if (it.reading == "*") it.surface else it.reading
@@ -24,10 +25,13 @@ class SensitiveKiller {
         }*/
         println("カナ: $res")
 
-        out = res.replace(Regex("""[^ア-ン]"""),"")
+        out = kanaToKatakana.transliterate(res)
+        println(out)
+
+        out = out.replace(Regex("""[^ア-ン]"""),"")
         println("編集済みカナ: $out")
 
-        out = kanaToLatin.transliterate(out).uppercase()
+        out = katakanaToLatin.transliterate(out).uppercase()
         println("英大文字: $out")
 
         ngWords.forEach { words ->
