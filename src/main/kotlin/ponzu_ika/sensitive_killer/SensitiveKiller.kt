@@ -16,6 +16,9 @@ class SensitiveKiller {
         val katakanaToLatin = Transliterator.getInstance("Katakana-Latin")
         val kanaToKatakana = Transliterator.getInstance("Hiragana-Katakana")
 
+        //読みがカタカナのためそのまま流用。しかし、読みがない場合があるためその際は文字そのものを取得
+        //恐らくここの文字取得でひらがな/カタカナ以外が取得されるとエラーを吐く。要するにバグの温床
+        //Regexで削除してしまえば解決できるがRegexの多用は重そう
         val res = tokenizer.tokenize(input).joinToString {
             if (it.reading == "*") it.surface else it.reading
         }.replace(Regex("""\s|,"""),"")
@@ -24,13 +27,15 @@ class SensitiveKiller {
             res += token.surface.replace(Regex("""\n"""),"")
         }*/
         println("カナ: $res")
-
+        //ひらがなをカタカナに変換。主にsurfaceで取得されたデータ用
         out = kanaToKatakana.transliterate(res)
         println(out)
 
-        out = out.replace(Regex("""[^ア-ン]"""),"")
+        //ここで句読点など余計なものを消去
+        out = out.replace(Regex("""[^ア-ンA-Z]"""),"")
         println("編集済みカナ: $out")
 
+        //カタカナをアルファベットに変換
         out = katakanaToLatin.transliterate(out).uppercase()
         println("英大文字: $out")
 
@@ -39,8 +44,10 @@ class SensitiveKiller {
                 println(out)
                 println(word)
                 out = (out.replace(
-                    Regex(word
-                        .replace(Regex("""CHI|TI"""), "(CHI|TI)")
+                    Regex(
+                        //regex内でRegexしていて大変気持ちが悪い。
+                        //やっていることは単純で、wordの表記ゆれを押さえているだけ。
+                        word.replace(Regex("""CHI|TI"""), "(CHI|TI)")
                         .replace(Regex("""N|NN"""), "(N|NN)")
                         .replace(Regex("""CO|KO"""), "(CO|KO)")
                         .replace(Regex("""RA|LLA"""), "(RA|LLA)")
@@ -57,7 +64,7 @@ class SensitiveKiller {
         return out
     }
 }
-
+/* debug酔う
 fun main() {
     SensitiveKiller().sensitiveKiller("我慢、このカフェラテは(ry ")
-}
+}*/

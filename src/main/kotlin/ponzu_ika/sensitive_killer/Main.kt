@@ -13,6 +13,7 @@ class Main : ListenerAdapter() {
     private lateinit var retruned:String
 
     fun main(token:String, guild_id:String) {
+        //JDAのセットアップ。それ以上でも以下でもない。
         val jda = JDABuilder.createDefault(token,
             GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES)
@@ -22,14 +23,20 @@ class Main : ListenerAdapter() {
 
         jda.awaitReady()
 
+        //コマンド実装用。辛いので投げた
         val guild = jda.getGuildById(guild_id)
         requireNotNull(guild) {"ギルドが存在しません"}
     }
 
+    //全てのメッセージに反応。サーバー指定なんてない
     override fun onMessageReceived(event: MessageReceivedEvent) {
+        //メッセージがBOTから飛んでいた場合は反応しない
         if(event.author.isBot) return
+        //受け取ったメッセージをreceivedMessageに代入
         receivedMessage = event.message.contentDisplay
+        //SensitiveKillerからreturnされた文章をretrunedに代入
         retruned = SensitiveKiller().sensitiveKiller(receivedMessage)
+        //アスタリスク(太字に用いている)があれば返信する。無ければそのまま終了
         if (retruned.contains("*"))
             event.message.reply(retruned).queue()
     }
