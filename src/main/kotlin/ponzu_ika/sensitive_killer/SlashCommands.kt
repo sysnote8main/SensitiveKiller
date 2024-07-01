@@ -11,7 +11,7 @@ class SlashCommands :ListenerAdapter(){
         if(event.name == "toggle_channel") {
             if(!File(guildid).isFile)
                 File(guildid).createNewFile()
-            val channelList = channelReader(guildid)
+            val channelList = reader(guildid)
             val channelListWriter = writer(guildid)
 
             println()

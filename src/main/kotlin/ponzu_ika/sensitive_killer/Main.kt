@@ -2,11 +2,13 @@ package ponzu_ika.sensitive_killer
 
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.requests.GatewayIntent
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 class Main : ListenerAdapter() {
@@ -38,7 +40,7 @@ class Main : ListenerAdapter() {
         val channelid = event.message.channelId
         if(!File(guildid).isFile)
             File(guildid).createNewFile()
-        val channelList = channelReader(guildid)
+        val channelList = reader(guildid)
         //メッセージがBOTから飛んでいた場合は反応しない
         if(event.author.isBot) return
         if(channelList.contains(channelid)) return
@@ -48,8 +50,12 @@ class Main : ListenerAdapter() {
         //SensitiveKillerからreturnされた文章をretrunedに代入
         retruned = SensitiveKiller().sensitiveKiller(receivedMessage)
         //アスタリスク(太字に用いている)があれば返信する。無ければそのまま終了
-        if (retruned.contains("*"))
-            event.message.reply(retruned).queue()
+        if (retruned.contains("*")){
+            event.message.addReaction(Emoji.fromUnicode("\uD83D\uDE93")).queue()
+            event.message.reply(retruned).queue {message ->
+                message.delete().queueAfter(3,TimeUnit.SECONDS)
+            }
+        }
     }
 
 }

@@ -3,7 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-SensitiveWords.txt
+words/SensitiveWords.txt
 
 ### IntelliJ IDEA ###
 .idea/*

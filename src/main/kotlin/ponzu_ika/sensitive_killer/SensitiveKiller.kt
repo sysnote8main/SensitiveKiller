@@ -6,8 +6,8 @@ import java.io.File
 
 
 class SensitiveKiller {
-    val ngWords = File("SensitiveWords.txt").readLines().map { it.split(",") }
-
+    val ngWords = File("words/SensitiveWords.txt").readLines()
+    val wordException = File("words/WordException.txt").readLines().map { it.split(",") }
     fun sensitiveKiller(input:String): String {
         println(ngWords)
         println("入力: $input")
@@ -15,11 +15,15 @@ class SensitiveKiller {
         val tokenizer = Tokenizer()
         val katakanaToLatin = Transliterator.getInstance("Katakana-Latin")
         val kanaToKatakana = Transliterator.getInstance("Hiragana-Katakana")
+        var wordExcepted = ""
+        wordException.forEach {word ->
+             wordExcepted = input.replace(Regex(word[0]),word[1]).uppercase()
+        }
 
         //読みがカタカナのためそのまま流用。しかし、読みがない場合があるためその際は文字そのものを取得
         //恐らくここの文字取得でひらがな/カタカナ以外が取得されるとエラーを吐く。要するにバグの温床
         //Regexで削除してしまえば解決できるがRegexの多用は重そう
-        val res = tokenizer.tokenize(input.uppercase()).joinToString {
+        val res = tokenizer.tokenize(wordExcepted).joinToString {
             if (it.reading == "*") it.surface else it.reading
         }.replace(Regex("""\s|,"""),"")
 /*
@@ -39,21 +43,20 @@ class SensitiveKiller {
         out = katakanaToLatin.transliterate(out).uppercase()
         println("英大文字: $out")
 
-        ngWords.forEach { words ->
-            words.forEach { word ->
-                println(out)
-                println(word)
-                out = (out.replace(
-                    Regex(
-                        //regex内でRegexしていて大変気持ちが悪い。
-                        //やっていることは単純で、wordの表記ゆれを押さえているだけ。
-                        word.replace(Regex("""CHI|TI"""), "(CHI|TI)")
+        ngWords.forEach { word ->
+            val uppercaseWord = word.uppercase()
+            println(word)
+            out = (out.replace(Regex("N'N"),"NNN")
+                .replace(Regex(
+                    //regex内でRegexしていて大変気持ちが悪い。
+                    //やっていることは単純で、wordの表記ゆれを押さえているだけ。
+                    uppercaseWord.replace(Regex("""CHI|TI"""), "(CHI|TI)")
                         .replace(Regex("""N|NN"""), "(N|NN)")
                         .replace(Regex("""CO|KO"""), "(CO|KO)")
                         .replace(Regex("""RA|LLA"""), "(RA|LLA)")
-                    ), "**$word**"
-                ))
-            }
+                        .replace(Regex("""HU|FU"""),"(HU|FU)")
+                ), "**$uppercaseWord**"
+            ))
         }
 
         println("あれば太字: $out")
