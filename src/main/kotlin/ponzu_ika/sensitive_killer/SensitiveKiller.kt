@@ -36,7 +36,7 @@ class SensitiveKiller {
         println(out)
 
         //ここで句読点など余計なものを消去
-        out = out.replace(Regex("""[^ア-ンA-Z]"""),"")
+        out = out.replace(Regex("""[^ア-ンA-Z0-9]"""),"")
         println("編集済みカナ: $out")
 
         //カタカナをアルファベットに変換

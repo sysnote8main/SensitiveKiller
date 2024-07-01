@@ -1,5 +1,6 @@
 package ponzu_ika.sensitive_killer
 
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.emoji.Emoji
@@ -15,9 +16,10 @@ class Main : ListenerAdapter() {
     private lateinit var receivedMessage:String
     private lateinit var retruned:String
     lateinit var guild:Guild
+    lateinit var jda: JDA
     fun main(token:String, guild_id:String) {
         //JDAのセットアップ。それ以上でも以下でもない。
-        val jda = JDABuilder.createDefault(token,
+         jda = JDABuilder.createDefault(token,
             GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES)
 
@@ -41,8 +43,8 @@ class Main : ListenerAdapter() {
         if(!File(guildid).isFile)
             File(guildid).createNewFile()
         val channelList = reader(guildid)
-        //メッセージがBOTから飛んでいた場合は反応しない
-        if(event.author.isBot) return
+        //メッセージがこのBOTから飛んでいた場合は反応しない
+        if(event.author.id == jda.selfUser.id) return
         if(channelList.contains(channelid)) return
 
         //受け取ったメッセージをreceivedMessageに代入
@@ -56,6 +58,7 @@ class Main : ListenerAdapter() {
                 message.delete().queueAfter(3,TimeUnit.SECONDS)
             }
         }
+
     }
 
 }
