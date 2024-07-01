@@ -46,16 +46,21 @@ class SensitiveKiller {
         ngWords.forEach { word ->
             val uppercaseWord = word.uppercase()
             println(word)
-            out = (out.replace(Regex("N'N"),"NNN")
-                .replace(Regex(
+            out = (
+                    out.replace(Regex("N'N"),"NNN")
+                        .replace(Regex("GYI"),"GI")
+                        .replace(Regex(
                     //regex内でRegexしていて大変気持ちが悪い。
                     //やっていることは単純で、wordの表記ゆれを押さえているだけ。
-                    uppercaseWord.replace(Regex("""CHI|TI"""), "(CHI|TI)")
-                        .replace(Regex("""N|NN"""), "(N|NN)")
-                        .replace(Regex("""CO|KO"""), "(CO|KO)")
-                        .replace(Regex("""RA|LLA"""), "(RA|LLA)")
-                        .replace(Regex("""HU|FU"""),"(HU|FU)")
-                ), "**$uppercaseWord**"
+                            uppercaseWord.replace(Regex("""CHI|TI"""), "(CHI|TI)")
+                                .replace(Regex("""N|NN"""), "(N|NN)")
+                                .replace(Regex("""CO|KO"""), "(CO|KO)")
+                                .replace(Regex("""RA|LLA"""), "(RA|LLA)")
+                                .replace(Regex("""HU|FU"""),"(HU|FU)")
+                                .replace(Regex("""SI|SHI"""),"(SHI|SI)")
+                                .replace(Regex("""JI|ZI"""),"(JI|ZI)")
+                                .replace(Regex("""SHO|SYO"""),("(SHO|SYO)"))
+                        ), "**$uppercaseWord**"
             ))
         }
 

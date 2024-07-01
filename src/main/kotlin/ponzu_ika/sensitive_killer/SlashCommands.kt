@@ -25,11 +25,11 @@ class SlashCommands :ListenerAdapter(){
 
             if(channelList.contains(id)) {
                 channelList.remove(id)
-                println("$name を除外リストに追加")
+                println("$name を除外リストから削除")
                 event.reply("$name で実行可能にしました。").queue()
             } else {
                 channelList.add(id)
-                println("$name を除外リストから削除")
+                println("$name を除外リストに追加")
                 event.reply("$name で実行不能にしました。").queue()
             }
 
