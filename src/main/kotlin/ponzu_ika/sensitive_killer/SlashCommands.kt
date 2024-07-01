@@ -4,12 +4,12 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.io.File
 
-class SlashCommands :ListenerAdapter(){
+class SlashCommands : ListenerAdapter() {
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
         val guildid = event.guild?.id!!
-        if(event.name == "toggle_channel") {
-            if(!File(guildid).isFile)
+        if (event.name == "toggle_channel") {
+            if (!File(guildid).isFile)
                 File(guildid).createNewFile()
             val channelList = reader(guildid)
             val channelListWriter = writer(guildid)
@@ -18,12 +18,12 @@ class SlashCommands :ListenerAdapter(){
             val id = event.channelId
             val name = event.channel
 
-            if(id==null) {
+            if (id == null) {
                 event.reply("ChannelIDの取得に失敗しました").queue()
                 return
             }
 
-            if(channelList.contains(id)) {
+            if (channelList.contains(id)) {
                 channelList.remove(id)
                 println("$name を除外リストから削除")
                 event.reply("$name で実行可能にしました。").queue()
